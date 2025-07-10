@@ -2,11 +2,11 @@ import streamlit as st
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_ollama import OllamaLLM
 from langchain.chains import RetrievalQA
 from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_aws import BedrockLLM  # ✅ Use Bedrock
 
-st.title("📄 RAG PDF Chatbot")
+st.title("📄 RAG PDF Chatbot (Claude via Bedrock)")
 
 query = st.text_input("Ask a question about the PDF")
 
@@ -19,8 +19,10 @@ if query:
     embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
     vectorstore = Chroma.from_documents(docs, embeddings, persist_directory="./chroma_store_pdf")
 
-    # LLM (Bedrock Claude via LangChain if configured, or local Ollama model)
-    llm = OllamaLLM(model="mistral")  # Switch to Claude if using Bedrock
+    # LLM using Claude from Bedrock
+    llm = BedrockLLM(model_id="anthropic.claude-3-sonnet-20240229-v1:0", region_name="us-east-1")
+
+    # QA Chain
     qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=vectorstore.as_retriever())
 
     # Query
