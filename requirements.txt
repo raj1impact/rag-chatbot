@@ -2,8 +2,7 @@ streamlit
 langchain
 langchain-community
 langchain-huggingface
-langchain-ollama
+boto3
 chromadb
-sentence-transformers
 pdfminer.six
-unstructured[all]
+sentence-transformers
